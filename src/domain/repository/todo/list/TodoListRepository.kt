@@ -1,4 +1,4 @@
-package com.lab.clean.ktor.domain.repository.todo
+package com.lab.clean.ktor.domain.repository.todo.list
 
 import com.lab.clean.ktor.domain.entity.todo.TodoListEntity
 

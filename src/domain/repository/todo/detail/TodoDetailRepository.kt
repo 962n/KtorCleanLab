@@ -1,4 +1,4 @@
-package com.lab.clean.ktor.domain.repository.todo
+package com.lab.clean.ktor.domain.repository.todo.detail
 
 import com.lab.clean.ktor.domain.core.Either
 import com.lab.clean.ktor.domain.entity.todo.TodoDetailEntity
@@ -14,7 +14,7 @@ interface TodoDetailRepository {
     )
 
     fun fetch(userId: Int, todoId: Int): Either<Failure, TodoDetailEntity>
-    fun store(userId: Int, todoId: Int, param: WriteParam): Either<Failure, Unit>
+    fun store(userId: Int, param: WriteParam): Either<Failure, Unit>
     fun delete(userId: Int, todoId: Int): Either<Failure, Unit>
     fun update(userId: Int, todoId: Int, param: WriteParam): Either<Failure, Unit>
     fun complete(userId: Int, todoId: Int): Either<Failure, Unit>
