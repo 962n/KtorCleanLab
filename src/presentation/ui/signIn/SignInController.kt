@@ -21,8 +21,11 @@ constructor(
         if (true) {
             return ApiResponse(HttpStatusCode.OK,"sign in success")
         }
+        val email = param.email ?: ""
+        val password = param.password ?: ""
+        // TODO validate
 
-        val result = useCase(SignInUseCase.Param(param.email, param.password))
+        val result = useCase(SignInUseCase.Param(email, password))
 
         return result.apiResponse({
             ApiResponse(HttpStatusCode.OK, Unit)

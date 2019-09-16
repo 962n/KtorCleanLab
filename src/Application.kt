@@ -1,6 +1,8 @@
 package com.lab.clean.ktor
 
 import com.lab.clean.ktor.presentation.extension.respondApi
+import com.lab.clean.ktor.presentation.ui.signIn.SignInController
+import com.lab.clean.ktor.presentation.ui.signUp.SignUpController
 import com.lab.clean.ktor.presentation.ui.todo.*
 import io.ktor.application.*
 import io.ktor.client.*
@@ -13,11 +15,11 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @KtorExperimentalLocationsAPI
 @Location("/sign_up")
-data class SignUp(val email: String, val password: String)
+data class SignUp(val email: String? = null, val password: String? = null)
 
 @KtorExperimentalLocationsAPI
 @Location("/sign_in")
-data class SignIn(val email: String, val password: String)
+data class SignIn(val email: String? = null, val password: String? = null)
 
 @KtorExperimentalLocationsAPI
 @Location("/todo")
@@ -41,23 +43,23 @@ class Todo {
 }
 
 @KtorExperimentalLocationsAPI
-@Location("/{id}")
+@Location("/todo/{id}")
 data class TodoDetail(val id: Int) {
     @Location("")
-    data class Update(val todoDetail: TodoDetail, val title: String)
+    data class Update(val todoDetail: TodoDetail, val title: String = "")
 
     @Location("")
-    data class Store(val todoDetail: TodoDetail, val title: String)
+    data class Store(val todoDetail: TodoDetail, val title: String = "")
 }
 
 
 @KtorExperimentalLocationsAPI
 @Location("/todo")
-data class TodoIndex(
-    val end_cursor: String?,
-    val limit: Int?,
-    val sort: Int?,
-    val filter: Int?
+class TodoIndex(
+    val end_cursor: String? = null,
+    val limit: Int? = null,
+    val sort: Int? = null,
+    val filter: Int? = null
 )
 
 @KtorExperimentalLocationsAPI
@@ -70,22 +72,21 @@ fun Application.module(testing: Boolean = false) {
     }
 
     routing {
-        //TODO this routing is not working. analyze.
-//        post<SignUp> { param ->
-//            call.respondApi(SignUpController(param))
-//        }
-//        post<SignIn> { param ->
-//            call.respondApi(SignInController(param))
-//        }
-//        get<TodoIndex> { param ->
-//            call.respondApi(IndexTodoController(param))
-//        }
-//        post<TodoDetail.Store> { param ->
-//            call.respondApi(StoreTodoController(param))
-//        }
-//        put<Todo.Detail.Update> { param ->
-//            call.respondApi(UpdateTodoController(param))
-//        }
+        post<SignUp> { param ->
+            call.respondApi(SignUpController(param))
+        }
+        post<SignIn> { param ->
+            call.respondApi(SignInController(param))
+        }
+        get<TodoIndex> { param ->
+            call.respondApi(IndexTodoController(param))
+        }
+        post<TodoDetail.Store> { param ->
+            call.respondApi(StoreTodoController(param))
+        }
+        put<TodoDetail.Update> { param ->
+            call.respondApi(UpdateTodoController(param))
+        }
         get<Todo.Detail> { param ->
             call.respondApi(ShowTodoController(param))
         }
