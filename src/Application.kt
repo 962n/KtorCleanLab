@@ -96,5 +96,7 @@ fun Application.module(testing: Boolean = false) {
     }
 }
 
-data class ApiResponse(val httpStatus: HttpStatusCode, val body: Any)
+data class ApiResponse(val httpStatus: HttpStatusCode, val body: Any) {
+    constructor(body: Any) : this(HttpStatusCode.OK, body)
+}
 

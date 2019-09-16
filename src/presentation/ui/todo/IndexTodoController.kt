@@ -19,13 +19,13 @@ constructor(
 
     override fun execute(): ApiResponse {
         if (true) {
-            return ApiResponse(HttpStatusCode.OK, "todo index in success")
+            return ApiResponse("todo index in success")
         }
         val result = useCase(1)
         return result.apiResponse({
-            ApiResponse(HttpStatusCode.OK, Unit)
+            ApiResponse(Unit)
         }, {
-            ApiResponse(HttpStatusCode.OK, Unit)
+            ApiResponse(Unit)
         })
     }
 }

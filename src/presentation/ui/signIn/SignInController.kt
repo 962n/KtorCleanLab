@@ -28,9 +28,9 @@ constructor(
         val result = useCase(SignInUseCase.Param(email, password))
 
         return result.apiResponse({
-            ApiResponse(HttpStatusCode.OK, Unit)
+            ApiResponse(Unit)
         }, {
-            ApiResponse(HttpStatusCode.OK, Unit)
+            ApiResponse(Unit)
         })
 
     }

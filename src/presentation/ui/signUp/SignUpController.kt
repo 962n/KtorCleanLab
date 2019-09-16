@@ -19,7 +19,7 @@ constructor(
     @KtorExperimentalLocationsAPI
     override fun execute(): ApiResponse {
         if (true) {
-            return ApiResponse(HttpStatusCode.OK,"sign in success")
+            return ApiResponse("sign in success")
         }
         val email = param.email ?: ""
         val password = param.password ?: ""
@@ -27,9 +27,9 @@ constructor(
 
         val result = useCase(SignUpUseCase.Param(email, password))
         return result.apiResponse({
-            ApiResponse(HttpStatusCode.OK, Unit)
+            ApiResponse(Unit)
         }, {
-            ApiResponse(HttpStatusCode.OK, Unit)
+            ApiResponse(Unit)
         })
     }
 }

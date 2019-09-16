@@ -12,6 +12,6 @@ constructor(
     private val inputParam: TodoDetail.Update
 ) : BaseController() {
     override fun execute(): ApiResponse {
-        return ApiResponse(HttpStatusCode.OK, "todo update in success")
+        return ApiResponse("todo update in success")
     }
 }

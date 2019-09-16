@@ -13,6 +13,6 @@ constructor(
     private val inputParam: TodoDetail.Store
 ) : BaseController() {
     override fun execute(): ApiResponse {
-        return ApiResponse(HttpStatusCode.OK, "todo store in success")
+        return ApiResponse("todo store in success")
     }
 }
