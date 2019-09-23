@@ -2,6 +2,7 @@ package com.lab.clean.ktor.presentation.ui.signIn
 
 import com.lab.clean.ktor.ApiResponse
 import com.lab.clean.ktor.SignIn
+import com.lab.clean.ktor.domain.entity.auth.AuthEntity
 import com.lab.clean.ktor.domain.useCase.auth.SignInUseCase
 import com.lab.clean.ktor.presentation.extension.apiResponse
 import com.lab.clean.ktor.presentation.ui.BaseController
