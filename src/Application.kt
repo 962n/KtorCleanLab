@@ -1,5 +1,6 @@
 package com.lab.clean.ktor
 
+import com.lab.clean.ktor.data.DatabaseFactory
 import com.lab.clean.ktor.presentation.extension.respondApi
 import com.lab.clean.ktor.presentation.ui.signIn.SignInController
 import com.lab.clean.ktor.presentation.ui.signUp.SignUpController
@@ -67,6 +68,7 @@ class TodoIndex(
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
     install(Locations)
+    DatabaseFactory.initialize()
 
     val client = HttpClient(Apache) {
     }
