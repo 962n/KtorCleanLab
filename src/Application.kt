@@ -1,7 +1,5 @@
 package com.lab.clean.ktor
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import com.lab.clean.ktor.data.DBConnector
 import com.lab.clean.ktor.data.JwtConfig
 import com.lab.clean.ktor.presentation.extension.respondApi
@@ -10,19 +8,16 @@ import com.lab.clean.ktor.presentation.ui.signUp.SignUpController
 import com.lab.clean.ktor.presentation.ui.todo.*
 import io.ktor.application.*
 import io.ktor.auth.Authentication
+import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
-import io.ktor.auth.principal
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.*
-import io.ktor.response.respond
 import io.ktor.routing.routing;
 import io.ktor.util.KtorExperimentalAPI
-import io.ktor.util.pipeline.PipelinePhase
-import org.jetbrains.exposed.sql.logTimeSpent
 
 fun main(args: Array<String>): Unit {
     io.ktor.server.netty.EngineMain.main(args)
@@ -85,6 +80,9 @@ fun Application.module(testing: Boolean = false) {
     install(Locations)
 
     val jwtConfig = JwtConfig(environment)
+    authentication {
+
+    }
     install(Authentication) {
         jwt {
             this.realm = jwtConfig.realm
@@ -99,8 +97,7 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-
-//    DBConnector.connect(environment)
+    DBConnector.connect(environment)
 
     val client = HttpClient(Apache) {
     }
@@ -113,7 +110,7 @@ fun Application.module(testing: Boolean = false) {
             call.respondApi(SignInController(param))
         }
 
-        authentication {
+        authenticate {
             get<TodoIndex> { param ->
                 call.respondApi(IndexTodoController(param))
             }
