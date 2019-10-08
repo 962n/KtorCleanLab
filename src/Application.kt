@@ -68,6 +68,7 @@ class TodoIndex(
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
     install(Locations)
+
     DatabaseFactory.initialize()
 
     val client = HttpClient(Apache) {
