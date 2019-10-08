@@ -1,18 +1,32 @@
 package com.lab.clean.ktor
 
-import com.lab.clean.ktor.data.DatabaseFactory
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
+import com.lab.clean.ktor.data.DBConnector
+import com.lab.clean.ktor.data.JwtConfig
 import com.lab.clean.ktor.presentation.extension.respondApi
 import com.lab.clean.ktor.presentation.ui.signIn.SignInController
 import com.lab.clean.ktor.presentation.ui.signUp.SignUpController
 import com.lab.clean.ktor.presentation.ui.todo.*
 import io.ktor.application.*
+import io.ktor.auth.Authentication
+import io.ktor.auth.authentication
+import io.ktor.auth.jwt.JWTPrincipal
+import io.ktor.auth.jwt.jwt
+import io.ktor.auth.principal
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.*
+import io.ktor.response.respond
 import io.ktor.routing.routing;
+import io.ktor.util.KtorExperimentalAPI
+import io.ktor.util.pipeline.PipelinePhase
+import org.jetbrains.exposed.sql.logTimeSpent
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>): Unit {
+    io.ktor.server.netty.EngineMain.main(args)
+}
 
 @KtorExperimentalLocationsAPI
 @Location("/sign_up")
@@ -63,13 +77,30 @@ class TodoIndex(
     val filter: Int? = null
 )
 
+@KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
     install(Locations)
 
-    DatabaseFactory.initialize()
+    val jwtConfig = JwtConfig(environment)
+    install(Authentication) {
+        jwt {
+            this.realm = jwtConfig.realm
+            verifier(jwtConfig.jwt)
+            validate { credential ->
+                if (credential.payload.audience.contains(jwtConfig.audience)) {
+                    JWTPrincipal(credential.payload)
+                } else {
+                    throw IllegalStateException("unauthorized")
+                }
+            }
+        }
+    }
+
+
+//    DBConnector.connect(environment)
 
     val client = HttpClient(Apache) {
     }
@@ -81,20 +112,23 @@ fun Application.module(testing: Boolean = false) {
         post<SignIn> { param ->
             call.respondApi(SignInController(param))
         }
-        get<TodoIndex> { param ->
-            call.respondApi(IndexTodoController(param))
-        }
-        post<TodoDetail.Store> { param ->
-            call.respondApi(StoreTodoController(param))
-        }
-        put<TodoDetail.Update> { param ->
-            call.respondApi(UpdateTodoController(param))
-        }
-        get<Todo.Detail> { param ->
-            call.respondApi(ShowTodoController(param))
-        }
-        delete<Todo.Detail> { param ->
-            call.respondApi(DelTodoController(param))
+
+        authentication {
+            get<TodoIndex> { param ->
+                call.respondApi(IndexTodoController(param))
+            }
+            post<TodoDetail.Store> { param ->
+                call.respondApi(StoreTodoController(param))
+            }
+            put<TodoDetail.Update> { param ->
+                call.respondApi(UpdateTodoController(param))
+            }
+            get<Todo.Detail> { param ->
+                call.respondApi(ShowTodoController(param))
+            }
+            delete<Todo.Detail> { param ->
+                call.respondApi(DelTodoController(param))
+            }
         }
     }
 }
