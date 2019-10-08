@@ -80,9 +80,6 @@ fun Application.module(testing: Boolean = false) {
     install(Locations)
 
     val jwtConfig = JwtConfig(environment)
-    authentication {
-
-    }
     install(Authentication) {
         jwt {
             this.realm = jwtConfig.realm
