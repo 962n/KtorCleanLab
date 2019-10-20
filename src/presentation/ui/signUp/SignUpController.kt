@@ -2,34 +2,61 @@ package com.lab.clean.ktor.presentation.ui.signUp
 
 import com.lab.clean.ktor.ApiResponse
 import com.lab.clean.ktor.SignUp
+import com.lab.clean.ktor.data.JwtConfig
+import com.lab.clean.ktor.data.repositoryImpl.AuthRepositoryImpl
 import com.lab.clean.ktor.domain.useCase.auth.SignUpUseCase
 import com.lab.clean.ktor.presentation.ui.BaseController
 import com.lab.clean.ktor.presentation.extension.apiResponse
+import com.lab.clean.ktor.presentation.extension.isEmail
+import com.lab.clean.ktor.presentation.response.AuthResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.util.KtorExperimentalAPI
+import org.jetbrains.exposed.sql.transactions.experimental.transaction
 
 class SignUpController
+@KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
 constructor(
-    private val param: SignUp
+    private val param: SignUp,
+    private val jwtConfig: JwtConfig
 ) : BaseController() {
 
     lateinit var useCase: SignUpUseCase
 
+    @KtorExperimentalAPI
     @KtorExperimentalLocationsAPI
-    override fun execute(): ApiResponse {
-        if (true) {
-            return ApiResponse("sign in success")
+    override suspend fun execute(): ApiResponse {
+        inject()
+        val email = param.email ?: return ApiResponse(HttpStatusCode.BadRequest, Unit)
+        val password = param.password ?: return ApiResponse(HttpStatusCode.BadRequest, Unit)
+        val name = param.name ?: return ApiResponse(HttpStatusCode.BadRequest, Unit)
+        if (!email.isEmail()) {
+            ApiResponse(HttpStatusCode.BadRequest, Unit)
         }
-        val email = param.email ?: ""
-        val password = param.password ?: ""
-        // TODO validate
+        if (password.length < 6) {
+            ApiResponse(HttpStatusCode.BadRequest, Unit)
+        }
+        val result = transaction {
+            val result = useCase(SignUpUseCase.Param(name, email, password))
+            result.either({
+                rollback()
+            },{
+                commit()
+            })
+            result
+        }
 
-        val result = useCase(SignUpUseCase.Param(email, password))
         return result.apiResponse({
-            ApiResponse(Unit)
+            ApiResponse(HttpStatusCode.BadRequest, Unit)
         }, {
-            ApiResponse(Unit)
+            ApiResponse(AuthResponse(it.userId, jwtConfig.makeToken(it)))
         })
     }
 }
+
+fun SignUpController.inject() {
+    val authRepository = AuthRepositoryImpl()
+    useCase = SignUpUseCase(authRepository)
+}
+

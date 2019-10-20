@@ -9,8 +9,15 @@ import com.lab.clean.ktor.domain.useCase.UseCase
 class SignUpUseCase constructor(private val repository: AuthRepository) : UseCase<AuthEntity, SignUpUseCase.Param>() {
 
     override fun run(params: Param): Either<Failure, AuthEntity> {
-        return repository.signUp(params.email, params.password)
+        return repository.signUp(params.toAuthRepositoryParam())
     }
 
-    data class Param(val email: String, val password: String)
+    data class Param(val name: String, val email: String, val password: String)
+}
+fun SignUpUseCase.Param.toAuthRepositoryParam() : AuthRepository.SingUpParam {
+    return AuthRepository.SingUpParam(
+        name,
+        email,
+        password
+    )
 }

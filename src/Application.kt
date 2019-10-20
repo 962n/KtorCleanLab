@@ -2,20 +2,29 @@ package com.lab.clean.ktor
 
 import com.lab.clean.ktor.data.DBConnector
 import com.lab.clean.ktor.data.JwtConfig
+import com.lab.clean.ktor.presentation.extension.appPrincipal
 import com.lab.clean.ktor.presentation.extension.respondApi
+import com.lab.clean.ktor.presentation.response.AuthResponse
 import com.lab.clean.ktor.presentation.ui.signIn.SignInController
 import com.lab.clean.ktor.presentation.ui.signUp.SignUpController
 import com.lab.clean.ktor.presentation.ui.todo.*
 import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
-import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
+import io.ktor.auth.principal
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
+import io.ktor.features.ContentNegotiation
+import io.ktor.gson.gson
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.*
+import io.ktor.request.receiveParameters
+import io.ktor.response.respond
+import io.ktor.routing.get
+import io.ktor.routing.post
+import io.ktor.routing.route
 import io.ktor.routing.routing;
 import io.ktor.util.KtorExperimentalAPI
 
@@ -25,7 +34,27 @@ fun main(args: Array<String>): Unit {
 
 @KtorExperimentalLocationsAPI
 @Location("/sign_up")
-data class SignUp(val email: String? = null, val password: String? = null)
+data class SignUp(val name: String? = null, val email: String? = null, val password: String? = null)
+
+@KtorExperimentalLocationsAPI
+suspend fun ApplicationCall.getSignUpParam(): SignUp {
+    val parameters = this.receiveParameters();
+    return SignUp(
+        parameters.get("name"),
+        parameters.get("email"),
+        parameters.get("password")
+    )
+}
+
+@KtorExperimentalLocationsAPI
+suspend fun ApplicationCall.getSignInParam(): SignIn {
+    val parameters = this.receiveParameters();
+    return SignIn(
+        parameters.get("email"),
+        parameters.get("password")
+    )
+}
+
 
 @KtorExperimentalLocationsAPI
 @Location("/sign_in")
@@ -77,6 +106,12 @@ class TodoIndex(
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+    install(ContentNegotiation) {
+        gson {
+            setPrettyPrinting()
+        }
+    }
+
     install(Locations)
 
     val jwtConfig = JwtConfig(environment)
@@ -86,7 +121,7 @@ fun Application.module(testing: Boolean = false) {
             verifier(jwtConfig.jwt)
             validate { credential ->
                 if (credential.payload.audience.contains(jwtConfig.audience)) {
-                    JWTPrincipal(credential.payload)
+                    jwtConfig.principal(credential.payload)
                 } else {
                     throw IllegalStateException("unauthorized")
                 }
@@ -100,11 +135,16 @@ fun Application.module(testing: Boolean = false) {
     }
 
     routing {
-        post<SignUp> { param ->
-            call.respondApi(SignUpController(param))
+        route("/hoge") {
+            get {
+                call.respond(AuthResponse(1, "hoge"))
+            }
+        }
+        post<SignUp> { _ ->
+            call.respondApi(SignUpController(call.getSignUpParam(), jwtConfig))
         }
         post<SignIn> { param ->
-            call.respondApi(SignInController(param))
+            call.respondApi(SignInController(call.getSignInParam(), jwtConfig))
         }
 
         authenticate {
@@ -112,7 +152,7 @@ fun Application.module(testing: Boolean = false) {
                 call.respondApi(IndexTodoController(param))
             }
             post<TodoDetail.Store> { param ->
-                call.respondApi(StoreTodoController(param))
+                call.respondApi(StoreTodoController(param, call.appPrincipal()))
             }
             put<TodoDetail.Update> { param ->
                 call.respondApi(UpdateTodoController(param))

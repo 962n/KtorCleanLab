@@ -4,5 +4,5 @@ import com.lab.clean.ktor.ApiResponse
 
 abstract class BaseController {
 
-    abstract fun execute(): ApiResponse
+    abstract suspend fun execute(): ApiResponse
 }

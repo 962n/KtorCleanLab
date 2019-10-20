@@ -17,7 +17,7 @@ constructor(
 
     lateinit var useCase: GetTodoListUseCase
 
-    override fun execute(): ApiResponse {
+    override suspend fun execute(): ApiResponse {
         if (true) {
             return ApiResponse("todo index in success")
         }

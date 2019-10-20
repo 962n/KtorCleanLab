@@ -1,12 +1,12 @@
 version: "2"
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: ./docker/app/Dockerfile
-    ports:
-      - 8080:8080
+#  app:
+#    build:
+#      context: .
+#      dockerfile: ./docker/app/Dockerfile
+#    ports:
+#      - 8080:8080
   db:
     image: mysql:5.7
     container_name: ktor_mysql_host

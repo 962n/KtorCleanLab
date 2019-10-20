@@ -2,8 +2,12 @@ package com.lab.clean.ktor.data
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.interfaces.Payload
+import com.lab.clean.ktor.domain.entity.auth.AuthEntity
+import com.lab.clean.ktor.presentation.AppPrincipal
 import io.ktor.application.ApplicationEnvironment
 import io.ktor.util.KtorExperimentalAPI
+import java.util.*
 
 @KtorExperimentalAPI
 class JwtConfig(environment: ApplicationEnvironment) {
@@ -15,5 +19,30 @@ class JwtConfig(environment: ApplicationEnvironment) {
     val jwt = JWT.require(algorithm)
         .withIssuer(issuer)
         .build()
+    private val validityInMs = environment.config.property("jwt.validity_in_min").getString().toInt() * 60
+
+    companion object {
+        private const val CLAIM_KEY_USER_ID = "user_id"
+    }
+
+    /**
+     * Produce a token for this combination of User and Account
+     */
+    fun makeToken(entity: AuthEntity): String = JWT.create()
+        .withSubject("Authentication")
+        .withIssuer(issuer)
+        .withClaim(CLAIM_KEY_USER_ID, entity.userId)
+        .withExpiresAt(getExpiration())
+        .sign(algorithm)
+
+    fun principal(payload: Payload): AppPrincipal {
+        val userId = payload.getClaim(CLAIM_KEY_USER_ID).toString()
+        return AppPrincipal(userId)
+    }
+
+    /**
+     * Calculate the expiration Date based on current time + the given validity
+     */
+    private fun getExpiration() = Date(System.currentTimeMillis() + validityInMs)
 
 }

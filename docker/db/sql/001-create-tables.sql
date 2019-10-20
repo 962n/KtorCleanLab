@@ -9,6 +9,8 @@ create table IF not exists `users`
  `id`               BIGINT UNSIGNED AUTO_INCREMENT,
  `name`             VARCHAR(20) NOT NULL,
  `email`            VARCHAR(100) NOT NULL,
+ `password`         VARCHAR(64)  NOT NULL,
+ `salt`             VARCHAR(30)  NOT NULL,
  `created_at`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `updated_at`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

@@ -11,7 +11,7 @@ class DelTodoController
 constructor(
     private val inputParam: Todo.Detail
 ) : BaseController() {
-    override fun execute(): ApiResponse {
+    override suspend fun execute(): ApiResponse {
         return ApiResponse("todo del in success")
     }
 }
