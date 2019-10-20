@@ -19,7 +19,7 @@ class JwtConfig(environment: ApplicationEnvironment) {
     val jwt = JWT.require(algorithm)
         .withIssuer(issuer)
         .build()
-    private val validityInMs = environment.config.property("jwt.validity_in_min").getString().toInt() * 60
+    private val validityInMs = environment.config.property("jwt.validity_in_min").getString().toInt() * 60 * 1000
 
     companion object {
         private const val CLAIM_KEY_USER_ID = "user_id"
@@ -30,6 +30,7 @@ class JwtConfig(environment: ApplicationEnvironment) {
      */
     fun makeToken(entity: AuthEntity): String = JWT.create()
         .withSubject("Authentication")
+        .withAudience(audience)
         .withIssuer(issuer)
         .withClaim(CLAIM_KEY_USER_ID, entity.userId)
         .withExpiresAt(getExpiration())

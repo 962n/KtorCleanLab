@@ -20,6 +20,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.gson.gson
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.*
+import io.ktor.request.receive
 import io.ktor.request.receiveParameters
 import io.ktor.response.respond
 import io.ktor.routing.get
@@ -135,11 +136,6 @@ fun Application.module(testing: Boolean = false) {
     }
 
     routing {
-        route("/hoge") {
-            get {
-                call.respond(AuthResponse(1, "hoge"))
-            }
-        }
         post<SignUp> { _ ->
             call.respondApi(SignUpController(call.getSignUpParam(), jwtConfig))
         }
@@ -148,6 +144,11 @@ fun Application.module(testing: Boolean = false) {
         }
 
         authenticate {
+            route("/hoge") {
+                get {
+                    call.respond(AuthResponse(1, "hoge"))
+                }
+            }
             get<TodoIndex> { param ->
                 call.respondApi(IndexTodoController(param))
             }
