@@ -11,7 +11,6 @@ import com.lab.clean.ktor.presentation.ui.todo.*
 import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
-import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.auth.principal
 import io.ktor.client.*
@@ -20,16 +19,15 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.gson.gson
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.*
-import io.ktor.request.receive
 import io.ktor.request.receiveParameters
 import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
-import io.ktor.routing.routing;
+import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 
-fun main(args: Array<String>): Unit {
+fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
@@ -39,7 +37,7 @@ data class SignUp(val name: String? = null, val email: String? = null, val passw
 
 @KtorExperimentalLocationsAPI
 suspend fun ApplicationCall.getSignUpParam(): SignUp {
-    val parameters = this.receiveParameters();
+    val parameters = this.receiveParameters()
     return SignUp(
         parameters.get("name"),
         parameters.get("email"),
@@ -49,13 +47,12 @@ suspend fun ApplicationCall.getSignUpParam(): SignUp {
 
 @KtorExperimentalLocationsAPI
 suspend fun ApplicationCall.getSignInParam(): SignIn {
-    val parameters = this.receiveParameters();
+    val parameters = this.receiveParameters()
     return SignIn(
         parameters.get("email"),
         parameters.get("password")
     )
 }
-
 
 @KtorExperimentalLocationsAPI
 @Location("/sign_in")
@@ -91,7 +88,6 @@ data class TodoDetail(val id: Int) {
     @Location("")
     data class Store(val todoDetail: TodoDetail, val title: String = "")
 }
-
 
 @KtorExperimentalLocationsAPI
 @Location("/todo")
@@ -171,4 +167,3 @@ fun Application.module(testing: Boolean = false) {
 data class ApiResponse(val httpStatus: HttpStatusCode, val body: Any) {
     constructor(body: Any) : this(HttpStatusCode.OK, body)
 }
-

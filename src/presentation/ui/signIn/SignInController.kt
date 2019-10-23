@@ -39,7 +39,6 @@ constructor(
         }, {
             ApiResponse(AuthResponse(it.userId, jwtConfig.makeToken(it)))
         })
-
     }
 }
 fun SignInController.inject() {

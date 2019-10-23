@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.Database
 @KtorExperimentalAPI
 object DBConnector {
 
-    fun toConfig(environment: ApplicationEnvironment) : HikariConfig {
+    fun toConfig(environment: ApplicationEnvironment): HikariConfig {
         val config = HikariConfig()
 
         config.maximumPoolSize = environment

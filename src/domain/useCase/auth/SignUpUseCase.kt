@@ -14,7 +14,7 @@ class SignUpUseCase constructor(private val repository: AuthRepository) : UseCas
 
     data class Param(val name: String, val email: String, val password: String)
 }
-fun SignUpUseCase.Param.toAuthRepositoryParam() : AuthRepository.SingUpParam {
+fun SignUpUseCase.Param.toAuthRepositoryParam(): AuthRepository.SingUpParam {
     return AuthRepository.SingUpParam(
         name,
         email,

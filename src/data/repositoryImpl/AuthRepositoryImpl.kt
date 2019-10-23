@@ -12,7 +12,6 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import java.security.MessageDigest
 
-
 class AuthRepositoryImpl : AuthRepository {
 
     override fun signIn(email: String, password: String): Either<Failure, AuthEntity> {

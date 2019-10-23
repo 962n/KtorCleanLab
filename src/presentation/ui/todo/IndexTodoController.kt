@@ -1,12 +1,10 @@
 package com.lab.clean.ktor.presentation.ui.todo
 
 import com.lab.clean.ktor.ApiResponse
-import com.lab.clean.ktor.Todo
 import com.lab.clean.ktor.TodoIndex
 import com.lab.clean.ktor.domain.useCase.todo.list.GetTodoListUseCase
 import com.lab.clean.ktor.presentation.ui.BaseController
 import com.lab.clean.ktor.presentation.extension.apiResponse
-import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
 
 class IndexTodoController

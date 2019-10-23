@@ -5,7 +5,6 @@ import com.lab.clean.ktor.Todo
 import com.lab.clean.ktor.presentation.ui.BaseController
 import io.ktor.locations.KtorExperimentalLocationsAPI
 
-
 class DelTodoController
 @KtorExperimentalLocationsAPI
 constructor(

@@ -18,5 +18,4 @@ interface TodoDetailRepository {
     fun delete(userId: Int, todoId: Int): Either<Failure, Unit>
     fun update(userId: Int, todoId: Int, param: WriteParam): Either<Failure, Unit>
     fun complete(userId: Int, todoId: Int): Either<Failure, Unit>
-
 }

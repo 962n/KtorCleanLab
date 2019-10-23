@@ -15,6 +15,6 @@ class UpdateTodoUseCase constructor(
             params.detail,
             params.deadLine
         )
-        return repository.update(userId, todoId, writeParam);
+        return repository.update(userId, todoId, writeParam)
     }
 }

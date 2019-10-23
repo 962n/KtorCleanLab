@@ -41,7 +41,7 @@ constructor(
             val result = useCase(SignUpUseCase.Param(name, email, password))
             result.either({
                 rollback()
-            },{
+            }, {
                 commit()
             })
             result
@@ -59,4 +59,3 @@ fun SignUpController.inject() {
     val authRepository = AuthRepositoryImpl()
     useCase = SignUpUseCase(authRepository)
 }
-

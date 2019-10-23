@@ -14,6 +14,6 @@ class StoreTodoUseCase constructor(
             params.detail,
             params.deadLine
         )
-        return repository.store(userId, writeParam);
+        return repository.store(userId, writeParam)
     }
 }

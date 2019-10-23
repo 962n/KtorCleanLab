@@ -10,4 +10,4 @@ suspend fun ApplicationCall.respondApi(controller: BaseController) {
     val response = controller.execute()
     this.respond(response.httpStatus, response.body)
 }
-fun ApplicationCall.appPrincipal():AppPrincipal = principal()!!
+fun ApplicationCall.appPrincipal(): AppPrincipal = principal()!!

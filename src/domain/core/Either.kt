@@ -33,12 +33,10 @@ fun <T, L, R> Either<L, R>.rightFlatMap(fn: (R) -> Either<L, T>): Either<L, T> =
 
 fun <T, L, R> Either<L, R>.rightMap(fn: (R) -> (T)): Either<L, T> = this.rightFlatMap(fn.c(::right))
 
-
 fun <T, L, R> Either<L, R>.leftFlatMap(fn: (L) -> Either<T, R>): Either<T, R> =
     when (this) {
         is Either.Left -> fn(a)
         is Either.Right -> Either.Right(b)
     }
-
 
 fun <T, L, R> Either<L, R>.leftMap(fn: (L) -> (T)): Either<T, R> = this.leftFlatMap(fn.c(::left))
