@@ -1,5 +1,6 @@
 package com.lab.clean.ktor.data.repositoryImpl
 
+import com.google.common.annotations.VisibleForTesting
 import com.lab.clean.ktor.data.UsersTable
 import com.lab.clean.ktor.domain.core.Either
 import com.lab.clean.ktor.domain.entity.auth.AuthEntity
@@ -58,8 +59,9 @@ class AuthRepositoryImpl : AuthRepository {
         return Either.Right(AuthEntity(userId))
     }
 
-    private fun makeHashPassword(password: String, salt: String): String {
-        val concatPass = password + salt;
+    @VisibleForTesting
+    fun makeHashPassword(password: String, salt: String): String {
+        val concatPass = password + salt
         return MessageDigest
             .getInstance("SHA-256")
             .digest(concatPass.toByteArray())

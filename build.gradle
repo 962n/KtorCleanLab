@@ -21,7 +21,7 @@ sourceSets {
     main.kotlin.srcDirs = main.java.srcDirs = ['src']
     test.kotlin.srcDirs = test.java.srcDirs = ['test']
     main.resources.srcDirs = ['resources']
-    test.resources.srcDirs = ['testresources']
+    test.resources.srcDirs = ['resources']
 }
 
 repositories {
@@ -46,6 +46,7 @@ dependencies {
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '2.3.2'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 }
 
 shadowJar {

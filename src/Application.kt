@@ -130,7 +130,7 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    DBConnector.connect(environment)
+    DBConnector.connect(DBConnector.toConfig(environment))
 
     val client = HttpClient(Apache) {
     }

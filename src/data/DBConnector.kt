@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.Database
 @KtorExperimentalAPI
 object DBConnector {
 
-    fun connect(environment: ApplicationEnvironment) {
+    fun toConfig(environment: ApplicationEnvironment) : HikariConfig {
         val config = HikariConfig()
 
         config.maximumPoolSize = environment
@@ -31,11 +31,20 @@ object DBConnector {
         config.isAutoCommit = false
         config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
 
+        config.setDriverClassName(environment
+            .config
+            .property("database.driver_name")
+            .getString()
+        )
+
         config.jdbcUrl = environment
             .config
             .property("database.jdbc_url")
             .getString()
+        return config
+    }
 
+    fun connect(config: HikariConfig) {
         config.validate()
         Database.connect(HikariDataSource(config))
     }
