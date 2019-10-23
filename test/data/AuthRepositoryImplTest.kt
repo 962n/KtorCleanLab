@@ -115,5 +115,4 @@ class AuthRepositoryImplTest : TestBase() {
         }
         assertTrue(result.isLeft)
     }
-
 }

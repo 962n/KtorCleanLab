@@ -15,7 +15,7 @@ open class TestBase {
     companion object {
         var isInit = false
     }
-    private val testDbConfig:HikariConfig
+    private val testDbConfig: HikariConfig
         get() {
             val config = HikariConfig()
             config.maximumPoolSize = 3
