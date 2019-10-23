@@ -12,7 +12,6 @@ import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlin.test.expect
 import kotlin.test.fail
 
 class SignInUseCaseTest {
@@ -55,7 +54,4 @@ class SignInUseCaseTest {
         })
         verify(authRepository).signIn(email, password)
     }
-
-
-
 }
