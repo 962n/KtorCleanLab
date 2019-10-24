@@ -1,6 +1,5 @@
 package com.lab.clean.ktor
 
-import com.lab.clean.ktor.data.DBConnector
 import com.lab.clean.ktor.data.TodosTable
 import com.lab.clean.ktor.data.UsersTable
 import com.zaxxer.hikari.HikariConfig
