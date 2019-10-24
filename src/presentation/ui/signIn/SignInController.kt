@@ -4,6 +4,7 @@ import com.lab.clean.ktor.ApiResponse
 import com.lab.clean.ktor.SignIn
 import com.lab.clean.ktor.data.JwtConfig
 import com.lab.clean.ktor.data.repositoryImpl.AuthRepositoryImpl
+import com.lab.clean.ktor.data.transactionMaster
 import com.lab.clean.ktor.domain.useCase.auth.SignInUseCase
 import com.lab.clean.ktor.presentation.extension.apiResponse
 import com.lab.clean.ktor.presentation.response.AuthResponse
@@ -30,7 +31,7 @@ constructor(
         val email = param.email ?: return ApiResponse(HttpStatusCode.BadRequest, Unit)
         val password = param.password ?: return ApiResponse(HttpStatusCode.BadRequest, Unit)
 
-        val result = transaction {
+        val result = transactionMaster {
             useCase(SignInUseCase.Param(email, password))
         }
 

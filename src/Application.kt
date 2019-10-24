@@ -12,7 +12,6 @@ import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.jwt
-import io.ktor.auth.principal
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.features.ContentNegotiation
@@ -22,7 +21,6 @@ import io.ktor.locations.*
 import io.ktor.request.receiveParameters
 import io.ktor.response.respond
 import io.ktor.routing.get
-import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
@@ -126,7 +124,7 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    DBConnector.connect(DBConnector.toConfig(environment))
+    DBConnector.setUp(environment)
 
     val client = HttpClient(Apache) {
     }

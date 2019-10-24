@@ -4,6 +4,8 @@ import com.lab.clean.ktor.ApiResponse
 import com.lab.clean.ktor.SignUp
 import com.lab.clean.ktor.data.JwtConfig
 import com.lab.clean.ktor.data.repositoryImpl.AuthRepositoryImpl
+import com.lab.clean.ktor.data.transactionMaster
+import com.lab.clean.ktor.data.transactionSlave
 import com.lab.clean.ktor.domain.useCase.auth.SignUpUseCase
 import com.lab.clean.ktor.presentation.ui.BaseController
 import com.lab.clean.ktor.presentation.extension.apiResponse
@@ -12,6 +14,7 @@ import com.lab.clean.ktor.presentation.response.AuthResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.util.KtorExperimentalAPI
+import org.h2.mvstore.MVStoreTool.rollback
 import org.jetbrains.exposed.sql.transactions.experimental.transaction
 
 class SignUpController
@@ -37,7 +40,7 @@ constructor(
         if (password.length < 6) {
             ApiResponse(HttpStatusCode.BadRequest, Unit)
         }
-        val result = transaction {
+        val result = transactionMaster {
             val result = useCase(SignUpUseCase.Param(name, email, password))
             result.either({
                 rollback()
