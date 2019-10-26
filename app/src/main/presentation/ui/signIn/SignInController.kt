@@ -5,6 +5,7 @@ import com.lab.clean.ktor.SignIn
 import com.lab.clean.ktor.data.JwtConfig
 import com.lab.clean.ktor.data.repositoryImpl.AuthRepositoryImpl
 import com.lab.clean.ktor.data.transactionMaster
+import com.lab.clean.ktor.domain.AtomicProcessor
 import com.lab.clean.ktor.domain.useCase.auth.SignInUseCase
 import com.lab.clean.ktor.presentation.extension.apiResponse
 import com.lab.clean.ktor.presentation.response.AuthResponse
@@ -19,19 +20,18 @@ class SignInController
 @KtorExperimentalLocationsAPI
 constructor(
     private val param: SignIn,
-    private val jwtConfig: JwtConfig
+    private val jwtConfig: JwtConfig,
+    private val atomicProcessor: AtomicProcessor,
+    private val useCase:SignInUseCase
 ) : BaseController() {
-
-    lateinit var useCase: SignInUseCase
 
     @KtorExperimentalAPI
     @KtorExperimentalLocationsAPI
     override suspend fun execute(): ApiResponse {
-        inject()
         val email = param.email ?: return ApiResponse(HttpStatusCode.BadRequest, Unit)
         val password = param.password ?: return ApiResponse(HttpStatusCode.BadRequest, Unit)
 
-        val result = transactionMaster {
+        val result = atomicProcessor.readOnly {
             useCase(SignInUseCase.Param(email, password))
         }
 
@@ -41,7 +41,4 @@ constructor(
             ApiResponse(AuthResponse(it.userId, jwtConfig.makeToken(it)))
         })
     }
-}
-fun SignInController.inject() {
-    useCase = SignInUseCase(AuthRepositoryImpl())
 }

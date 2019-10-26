@@ -5,9 +5,8 @@ import com.lab.clean.ktor.data.JwtConfig
 import com.lab.clean.ktor.presentation.extension.appPrincipal
 import com.lab.clean.ktor.presentation.extension.respondApi
 import com.lab.clean.ktor.presentation.response.AuthResponse
-import com.lab.clean.ktor.presentation.ui.signIn.SignInController
-import com.lab.clean.ktor.presentation.ui.signUp.SignUpController
 import com.lab.clean.ktor.presentation.ui.todo.*
+import com.lab.clean.ktor.route.routingAuth
 import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
@@ -18,7 +17,6 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.gson.gson
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.*
-import io.ktor.request.receiveParameters
 import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.route
@@ -29,32 +27,6 @@ fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
-@KtorExperimentalLocationsAPI
-@Location("/sign_up")
-data class SignUp(val name: String? = null, val email: String? = null, val password: String? = null)
-
-@KtorExperimentalLocationsAPI
-suspend fun ApplicationCall.getSignUpParam(): SignUp {
-    val parameters = this.receiveParameters()
-    return SignUp(
-        parameters.get("name"),
-        parameters.get("email"),
-        parameters.get("password")
-    )
-}
-
-@KtorExperimentalLocationsAPI
-suspend fun ApplicationCall.getSignInParam(): SignIn {
-    val parameters = this.receiveParameters()
-    return SignIn(
-        parameters.get("email"),
-        parameters.get("password")
-    )
-}
-
-@KtorExperimentalLocationsAPI
-@Location("/sign_in")
-data class SignIn(val email: String? = null, val password: String? = null)
 
 @KtorExperimentalLocationsAPI
 @Location("/todo")
@@ -130,12 +102,7 @@ fun Application.module(testing: Boolean = false) {
     }
 
     routing {
-        post<SignUp> { _ ->
-            call.respondApi(SignUpController(call.getSignUpParam(), jwtConfig))
-        }
-        post<SignIn> { param ->
-            call.respondApi(SignInController(call.getSignInParam(), jwtConfig))
-        }
+        routingAuth(jwtConfig)
 
         authenticate {
             route("/hoge") {
