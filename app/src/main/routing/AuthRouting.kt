@@ -1,9 +1,9 @@
 package com.lab.clean.ktor.app.routing
 
-import com.lab.clean.ktor.app.data.JwtConfig
-import com.lab.clean.ktor.app.data.TokenGeneratorImpl
 import com.lab.clean.ktor.app.ext.respondApi
+import com.lab.clean.ktor.data.TokenGeneratorImpl
 import com.lab.clean.ktor.data.TransactorImpl
+import com.lab.clean.ktor.data.jwt.JwtService
 import com.lab.clean.ktor.data.repositoryImpl.AuthRepositoryImpl
 import com.lab.clean.ktor.domain.useCase.auth.SignInUseCase
 import com.lab.clean.ktor.domain.useCase.auth.SignUpUseCase
@@ -62,9 +62,9 @@ data class SignIn(
 
 @KtorExperimentalAPI
 @KtorExperimentalLocationsAPI
-fun Routing.routingAuth(jwtConfig: JwtConfig) {
+fun Routing.routingAuth(jwtService: JwtService) {
     post<SignUp> {
-        val useCase = SignUpUseCase(AuthRepositoryImpl(), TokenGeneratorImpl(jwtConfig))
+        val useCase = SignUpUseCase(AuthRepositoryImpl(), TokenGeneratorImpl(jwtService))
         val controller = SignUpController(
             call.getSignUpParam().toControllerInput(),
             TransactorImpl,
@@ -73,7 +73,7 @@ fun Routing.routingAuth(jwtConfig: JwtConfig) {
         call.respondApi(controller)
     }
     post<SignIn> {
-        val useCase = SignInUseCase(AuthRepositoryImpl(), TokenGeneratorImpl(jwtConfig))
+        val useCase = SignInUseCase(AuthRepositoryImpl(), TokenGeneratorImpl(jwtService))
         val controller = SignInController(
             call.getSignInParam().toControllerInput(),
             TransactorImpl,

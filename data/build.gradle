@@ -20,8 +20,9 @@ dependencies {
     implementation project(":domain")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
     //jwt
-    implementation "io.ktor:ktor-auth-jwt:$ktor_version"
+    implementation 'com.auth0:java-jwt:3.8.3'
     //database
     implementation "org.jetbrains.exposed:exposed:$exposed_version"
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '2.3.2'

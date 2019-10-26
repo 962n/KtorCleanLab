@@ -17,15 +17,15 @@ constructor(
     data class InputParam(val email: String?, val password: String?)
 
     override suspend fun execute(): ApiResponse {
-        val email = param.email ?: return ApiResponse(ApiStatus.BAD_REQUEST, Unit)
-        val password = param.password ?: return ApiResponse(ApiStatus.BAD_REQUEST, Unit)
+        val email = param.email ?: return ApiResponse(ApiStatus.BAD_PARAMETER, Unit)
+        val password = param.password ?: return ApiResponse(ApiStatus.BAD_PARAMETER, Unit)
 
         val result = transactor.readOnly {
             useCase(SignInUseCase.Param(email, password))
         }
 
         return result.apiResponse({
-            ApiResponse(ApiStatus.BAD_REQUEST, Unit)
+            ApiResponse(ApiStatus.BAD_PARAMETER, Unit)
         }, {
             ApiResponse(AuthResponse(it.userId, it.token))
         })

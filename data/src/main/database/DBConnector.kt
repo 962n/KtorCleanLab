@@ -2,13 +2,21 @@ package com.lab.clean.ktor.data.database
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
-@KtorExperimentalAPI
 object DBConnector {
+
+    data class Config(
+        val userName:String,
+        val password:String,
+        val maximumPoolSize:Int,
+        val driverName:String,
+        val jdbcUrl:String
+    )
+
+    private const val TRANSACTION_ISOLATION = "TRANSACTION_REPEATABLE_READ"
 
     private lateinit var innerMaster: Database
     private lateinit var innerSlave: Database
@@ -19,24 +27,37 @@ object DBConnector {
     val slave: Database
         get() = innerSlave
 
-    fun setUpSlave(config: HikariConfig) {
-        config.validate()
-        innerSlave = Database.connect(HikariDataSource(config))
+    fun setUpSlave(config: Config) {
+        val hikariConfig = toHikariConfig(config)
+        hikariConfig.isReadOnly = true
+        hikariConfig.isAutoCommit = false
+        hikariConfig.validate()
+        innerSlave = Database.connect(HikariDataSource(hikariConfig))
+    }
+    fun setUpMaster(config: Config) {
+        val hikariConfig = toHikariConfig(config)
+        hikariConfig.isAutoCommit = false
+        hikariConfig.validate()
+        innerMaster = Database.connect(HikariDataSource(hikariConfig))
     }
 
-    fun setUpMaster(config: HikariConfig) {
-        config.validate()
-        innerMaster = Database.connect(HikariDataSource(config))
+    private fun toHikariConfig(config:Config):HikariConfig {
+        val hikariConfig = HikariConfig()
+        hikariConfig.maximumPoolSize = config.maximumPoolSize
+        hikariConfig.username = config.userName
+        hikariConfig.password = config.password
+        hikariConfig.transactionIsolation = TRANSACTION_ISOLATION
+        hikariConfig.setDriverClassName(config.driverName)
+        hikariConfig.jdbcUrl = config.jdbcUrl
+        return hikariConfig
     }
 
 }
 
-@KtorExperimentalAPI
 fun <T> transactionMaster(statement: Transaction.() -> T): T {
     return transaction(DBConnector.master, statement)
 }
 
-@KtorExperimentalAPI
 fun <T> transactionSlave(statement: Transaction.() -> T): T {
     return transaction(DBConnector.slave, statement)
 }

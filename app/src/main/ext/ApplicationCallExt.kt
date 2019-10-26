@@ -16,7 +16,7 @@ suspend fun ApplicationCall.respondApi(controller: BaseController) {
 fun ApiStatus.toHttpStatus(): HttpStatusCode {
     return when (this) {
         ApiStatus.SUCCESS -> HttpStatusCode.OK
-        ApiStatus.BAD_REQUEST -> HttpStatusCode.BadRequest
+        ApiStatus.BAD_PARAMETER -> HttpStatusCode.BadRequest
     }
 }
 

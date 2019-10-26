@@ -23,14 +23,14 @@ constructor(
     )
 
     override suspend fun execute(): ApiResponse {
-        val email = param.email ?: return ApiResponse(ApiStatus.BAD_REQUEST, Unit)
-        val password = param.password ?: return ApiResponse(ApiStatus.BAD_REQUEST, Unit)
-        val name = param.name ?: return ApiResponse(ApiStatus.BAD_REQUEST, Unit)
+        val email = param.email ?: return ApiResponse(ApiStatus.BAD_PARAMETER, Unit)
+        val password = param.password ?: return ApiResponse(ApiStatus.BAD_PARAMETER, Unit)
+        val name = param.name ?: return ApiResponse(ApiStatus.BAD_PARAMETER, Unit)
         if (!email.isEmail()) {
-            return ApiResponse(ApiStatus.BAD_REQUEST, Unit)
+            return ApiResponse(ApiStatus.BAD_PARAMETER, Unit)
         }
         if (password.length < 6) {
-            return ApiResponse(ApiStatus.BAD_REQUEST, Unit)
+            return ApiResponse(ApiStatus.BAD_PARAMETER, Unit)
         }
 
         val result = transactor.readWrite {
@@ -38,7 +38,7 @@ constructor(
         }
 
         return result.apiResponse({
-            ApiResponse(ApiStatus.BAD_REQUEST, Unit)
+            ApiResponse(ApiStatus.BAD_PARAMETER, Unit)
         }, {
             ApiResponse(AuthResponse(it.userId, it.token))
         })
