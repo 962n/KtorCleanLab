@@ -29,11 +29,11 @@ class JwtConfig(environment: ApplicationEnvironment) {
     /**
      * Produce a token for this combination of User and Account
      */
-    fun makeToken(entity: AuthEntity): String = JWT.create()
+    fun makeToken(userId: Int): String = JWT.create()
         .withSubject("Authentication")
         .withAudience(audience)
         .withIssuer(issuer)
-        .withClaim(CLAIM_KEY_USER_ID, entity.userId)
+        .withClaim(CLAIM_KEY_USER_ID, userId)
         .withExpiresAt(getExpiration())
         .sign(algorithm)
 

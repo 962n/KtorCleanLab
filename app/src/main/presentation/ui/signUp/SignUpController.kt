@@ -1,10 +1,7 @@
 package com.lab.clean.ktor.presentation.ui.signUp
 
 import com.lab.clean.ktor.ApiResponse
-import com.lab.clean.ktor.SignUp
 import com.lab.clean.ktor.data.JwtConfig
-import com.lab.clean.ktor.data.repositoryImpl.AuthRepositoryImpl
-import com.lab.clean.ktor.data.transactionMaster
 import com.lab.clean.ktor.domain.AtomicProcessor
 import com.lab.clean.ktor.domain.useCase.auth.SignUpUseCase
 import com.lab.clean.ktor.presentation.ui.BaseController
@@ -17,13 +14,17 @@ import io.ktor.util.KtorExperimentalAPI
 
 class SignUpController
 @KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
 constructor(
-    private val param: SignUp,
-    private val jwtConfig: JwtConfig,
+    private val param: InputParam,
     private val atomicProcessor: AtomicProcessor,
     private val useCase: SignUpUseCase
 ) : BaseController() {
+
+    data class InputParam(
+        val name: String?,
+        val email: String?,
+        val password: String?
+    )
 
     @KtorExperimentalAPI
     @KtorExperimentalLocationsAPI
@@ -45,7 +46,7 @@ constructor(
         return result.apiResponse({
             ApiResponse(HttpStatusCode.BadRequest, Unit)
         }, {
-            ApiResponse(AuthResponse(it.userId, jwtConfig.makeToken(it)))
+            ApiResponse(AuthResponse(it.userId, it.token))
         })
     }
 }

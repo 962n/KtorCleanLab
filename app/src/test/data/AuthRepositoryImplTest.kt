@@ -78,8 +78,8 @@ class AuthRepositoryImplTest : TestBase() {
             {
                 fail("do not expect this route!!")
             },
-            {
-                assertEquals(expectUserId, it.userId)
+            {userId ->
+                assertEquals(expectUserId, userId)
             }
         )
     }

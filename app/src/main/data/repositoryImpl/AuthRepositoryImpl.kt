@@ -3,7 +3,6 @@ package com.lab.clean.ktor.data.repositoryImpl
 import com.google.common.annotations.VisibleForTesting
 import com.lab.clean.ktor.data.UsersTable
 import com.lab.clean.ktor.domain.core.Either
-import com.lab.clean.ktor.domain.entity.auth.AuthEntity
 import com.lab.clean.ktor.domain.exception.Failure
 import com.lab.clean.ktor.domain.exception.SignUpFailure
 import com.lab.clean.ktor.domain.exception.SignUpFailureType
@@ -14,7 +13,7 @@ import java.security.MessageDigest
 
 class AuthRepositoryImpl : AuthRepository {
 
-    override fun signIn(email: String, password: String): Either<Failure, AuthEntity> {
+    override fun signIn(email: String, password: String): Either<Failure, Int> {
         val user = UsersTable.slice(
             UsersTable.id,
             UsersTable.password,
@@ -27,10 +26,10 @@ class AuthRepositoryImpl : AuthRepository {
         if (hashPassword != user[UsersTable.password]) {
             return Either.Left(SignUpFailure(SignUpFailureType.ALREADY_EXIST))
         }
-        return Either.Right(AuthEntity(user[UsersTable.id]))
+        return Either.Right(user[UsersTable.id])
     }
 
-    override fun signUp(param: AuthRepository.SingUpParam): Either<SignUpFailure, AuthEntity> {
+    override fun signUp(param: AuthRepository.SingUpParam): Either<SignUpFailure, Int> {
         val exists = UsersTable
             .select {
                 UsersTable.email eq param.email
@@ -55,7 +54,7 @@ class AuthRepositoryImpl : AuthRepository {
             it[this.salt] = salt
         } get UsersTable.id
 
-        return Either.Right(AuthEntity(userId))
+        return Either.Right(userId)
     }
 
     @VisibleForTesting
