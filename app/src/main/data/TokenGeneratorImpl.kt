@@ -1,4 +1,4 @@
-package com.lab.clean.ktor.data
+package com.lab.clean.ktor.app.data
 
 import com.lab.clean.ktor.domain.repository.auth.TokenGenerator
 import io.ktor.util.KtorExperimentalAPI

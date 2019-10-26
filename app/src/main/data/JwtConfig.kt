@@ -1,10 +1,9 @@
-package com.lab.clean.ktor.data
+package com.lab.clean.ktor.app.data
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.Payload
-import com.lab.clean.ktor.domain.entity.auth.AuthEntity
-import com.lab.clean.ktor.presentation.AppPrincipal
+import com.lab.clean.ktor.app.AppPrincipal
 import io.ktor.application.ApplicationEnvironment
 import io.ktor.util.KtorExperimentalAPI
 import java.util.*
@@ -39,7 +38,7 @@ class JwtConfig(environment: ApplicationEnvironment) {
 
     fun principal(payload: Payload): AppPrincipal {
         val userId = payload.getClaim(CLAIM_KEY_USER_ID).toString()
-        return AppPrincipal(userId)
+        return AppPrincipal(userId.toInt())
     }
 
     /**

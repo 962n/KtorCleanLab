@@ -1,4 +1,12 @@
 rootProject.name = "KtorCleanLab"
+
 include 'app'
+
 include 'domain'
+include 'data'
+
+//feature
+include 'feature:auth'
+include 'feature:core-component'
+include 'feature:todo'
 
