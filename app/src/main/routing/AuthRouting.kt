@@ -3,7 +3,7 @@ package com.lab.clean.ktor.app.routing
 import com.lab.clean.ktor.app.data.JwtConfig
 import com.lab.clean.ktor.app.data.TokenGeneratorImpl
 import com.lab.clean.ktor.app.ext.respondApi
-import com.lab.clean.ktor.data.AtomicProcessorImpl
+import com.lab.clean.ktor.data.TransactorImpl
 import com.lab.clean.ktor.data.repositoryImpl.AuthRepositoryImpl
 import com.lab.clean.ktor.domain.useCase.auth.SignInUseCase
 import com.lab.clean.ktor.domain.useCase.auth.SignUpUseCase
@@ -67,7 +67,7 @@ fun Routing.routingAuth(jwtConfig: JwtConfig) {
         val useCase = SignUpUseCase(AuthRepositoryImpl(), TokenGeneratorImpl(jwtConfig))
         val controller = SignUpController(
             call.getSignUpParam().toControllerInput(),
-            AtomicProcessorImpl,
+            TransactorImpl,
             useCase
         )
         call.respondApi(controller)
@@ -76,7 +76,7 @@ fun Routing.routingAuth(jwtConfig: JwtConfig) {
         val useCase = SignInUseCase(AuthRepositoryImpl(), TokenGeneratorImpl(jwtConfig))
         val controller = SignInController(
             call.getSignInParam().toControllerInput(),
-            AtomicProcessorImpl,
+            TransactorImpl,
             useCase
         )
         call.respondApi(controller)

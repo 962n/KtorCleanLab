@@ -1,6 +1,6 @@
 package com.lab.clean.ktor.feature.auth.signUp
 
-import com.lab.clean.ktor.domain.AtomicProcessor
+import com.lab.clean.ktor.domain.Transactor
 import com.lab.clean.ktor.domain.useCase.auth.SignUpUseCase
 import com.lab.clean.ktor.feature.auth.AuthResponse
 import com.lab.clean.ktor.feature.auth.isEmail
@@ -12,7 +12,7 @@ import com.lab.clean.ktor.feature.coreComponent.apiResponse
 class SignUpController
 constructor(
     private val param: InputParam,
-    private val atomicProcessor: AtomicProcessor,
+    private val transactor: Transactor,
     private val useCase: SignUpUseCase
 ) : BaseController() {
 
@@ -33,7 +33,7 @@ constructor(
             return ApiResponse(ApiStatus.BAD_REQUEST, Unit)
         }
 
-        val result = atomicProcessor.readWrite {
+        val result = transactor.readWrite {
             useCase(SignUpUseCase.Param(name, email, password))
         }
 
